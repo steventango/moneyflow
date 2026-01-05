@@ -20,8 +20,8 @@ def main():
         df = pd.read_csv(f)
         totals = df[0:1].dropna(axis=1).values.tolist()[0][2::2]
         totals = list(map(lambda x: float(Currency(x, '$CA')), totals))
-        payee_list = df[10:11].dropna(axis=1).values.tolist()[0]
-        for _, row in df[1:9].iterrows():
+        payee_list = df[-1:].dropna(axis=1).values.tolist()[0]
+        for _, row in df[1:-2].iterrows():
             payer = row['Name']
             for i, col in enumerate(row[2::2]):
                 payee = payee_list[i]
