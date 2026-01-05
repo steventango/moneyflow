@@ -9,7 +9,7 @@ class Currency:
         self.prefix = prefix
 
     def __float__(self):
-        return float(self.text.lstrip(self.prefix))
+        return float(self.text.lstrip(self.prefix).replace(',', ''))
 
 def main():
     net = {}
