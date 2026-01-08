@@ -15,6 +15,7 @@ def main():
     net = {}
     credits = {}
     debits = {}
+pairwise_balances = {}
 
     with open('road trip $$$ - Money.csv') as f:
         df = pd.read_csv(f)
@@ -39,6 +40,14 @@ def main():
                 debits[payer] -= amount
                 net[payee] += amount
                 credits[payee] += amount
+                if payer == payee or amount < EPSILON:
+                    continue
+                key = tuple(sorted([payer, payee]))
+                pairwise_balances.setdefault(key, 0)
+                if payer < payee:
+                    pairwise_balances[key] += amount
+                else:
+                    pairwise_balances[key] -= amount
 
     debt = 0
     debtors = PriorityQueue()
@@ -54,6 +63,15 @@ def main():
             credit -= net[person]
             creditors.put((-net[person], person))
         print(f'{person:7} / ${debits[person] if person in debits else 0:7.2f} / ${credits[person] if person in credits else 0:7.2f} / ${net[person]:7.2f}')
+    print()
+
+    print('Pairwise Balances:')
+    for key in sorted(pairwise_balances.keys()):
+        pairwise_balance = pairwise_balances[key]
+        if pairwise_balance < 0:
+            pairwise_balance = -pairwise_balance
+            key = tuple(reversed(key))
+        print(f'{key[0]:7} -> {key[1]:7}: ${pairwise_balance:.2f}')
     print()
 
     print('Transfers:')
